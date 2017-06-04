@@ -14,107 +14,107 @@ We use [OpenCV](http://opencv.org) to manipulate images and features. Dowload an
 We use [Pangolin](https://github.com/stevenlovegrove/Pangolin) for visualization and user interface. Dowload and install instructions can be found at: https://github.com/stevenlovegrove/Pangolin.
 
 git clone https://github.com/stevenlovegrove/Pangolin.git
-cd Pangolin
-mkdir build
-cd build
-cmake ..
-make -j
+cd Pangolin  
+mkdir build  
+cd build  
+cmake ..  
+make -j  
 
 ## ROS 
-We provide some examples to process the live input of a monocular or RGB-D camera using [ROS](ros.org). Building these examples is optional. In case you want to use ROS, a version Hydro or newer is needed.
+We provide some examples to process the live input of a monocular or RGB-D camera using [ROS](ros.org). Building these examples is optional. In case you want to use ROS, a version Hydro or newer is needed.  
 安装ros indigo，参考ROS官网 http://wiki.ros.org/indigo/Installation/Ubuntu
 
 ## g2o
-https://github.com/RainerKuemmerle/g2o
+https://github.com/RainerKuemmerle/g2o  
 参考：http://www.cnblogs.com/gaoxiang12/p/4739934.html
 
 ## Sophus - Lie groups
-用于直接法RGBD-DSLAM
+用于直接法RGBD-DSLAM  
 
-git clone https://github.com/strasdat/Sophus.git
-cd Sophus
-git checkout a621ff
-mkdir build
-cd build
-cmake ..
-make
+git clone https://github.com/strasdat/Sophus.git  
+cd Sophus  
+git checkout a621ff  
+mkdir build  
+cd build  
+cmake ..  
+make  
 
 You don't need to install the library since cmake .. writes the package location to ~/.cmake/packages/ where CMake can later find it.
 
 ## Fast - Corner Detector
-用于直接法RGBD-DSLAM
+用于直接法RGBD-DSLAM  
 
-git clone https://github.com/uzh-rpg/fast.git
-cd fast
-mkdir build
-cd build
-cmake ..
-make
+git clone https://github.com/uzh-rpg/fast.git  
+cd fast  
+mkdir build  
+cd build  
+cmake ..  
+make  
 
 ## vikit_common
 用于直接法RGBD-DSLAM
 vikit contains camera models, some math and interpolation functions that SVO needs.
 
-cd workspace
-git clone https://github.com/uzh-rpg/rpg_vikit.git
+cd workspace  
+git clone https://github.com/uzh-rpg/rpg_vikit.git  
 
-in rpg_vikit/vikit_common/CMakeLists.txt set the flag USE_ROS to FALSE.
+in rpg_vikit/vikit_common/CMakeLists.txt set the flag USE_ROS to FALSE.  
 
-cd rpg_vikit/vikit_common
-mkdir build
-cd build
-cmake ..
-make
+cd rpg_vikit/vikit_common  
+mkdir build  
+cd build  
+cmake ..  
+make  
 
 Sophus,Fast 和 vikit_common的安装参考：https://github.com/uzh-rpg/rpg_svo/wiki/Installation:-Plain-CMake-(No-ROS)
 
 # 3 Building library and some nodes
 ## 3.1 Creating a catkin Workspace
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/src
-catkin_init_workspace
+mkdir -p ~/catkin_ws/src  
+cd ~/catkin_ws/src  
+catkin_init_workspace  
 
 ## 3.2. Building Thirdparty library
 ### DBoW2
-cd Thirdparty/DBoW2
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j
+cd Thirdparty/DBoW2  
+mkdir build  
+cd build  
+cmake .. -DCMAKE_BUILD_TYPE=Release  
+make -j  
 
 ### g2o
-cd Thirdparty/g2o
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j
+cd Thirdparty/g2o  
+mkdir build  
+cd build  
+cmake .. -DCMAKE_BUILD_TYPE=Release  
+make -j  
 
 ### RGBD-DSLAM
-cd Thirdparty/RGBD-DSLAM
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j
+cd Thirdparty/RGBD-DSLAM  
+mkdir build  
+cd build  
+cmake .. -DCMAKE_BUILD_TYPE=Release  
+make -j  
 
 ## 3.3 Building package 
-cd ~/catkin_ws
-catkin_make --pkg orbslam2
+cd ~/catkin_ws  
+catkin_make --pkg orbslam2  
 
 # 4 Usage 
-1. localization : "Usage: rosrun ORB_SLAM2 RGBD path_to_vocabulary path_to_settings if_reuse_map if_publish_tf" 
+## 1. localization : "Usage: rosrun ORB_SLAM2 RGBD path_to_vocabulary path_to_settings if_reuse_map if_publish_tf"  
 功能：在ORB-SLAM定位模式下跟踪机器人并发布tf用于导航。当ORB-SLAM跟丢时，利用机器人底座历程数据odom 或者 用直接法估计里程 进而发布tf继续用于导航。
 如果超过一定时间的跟丢，机器人则执行原地旋转。
 
-roslaunch kinect2_bridge kinect2_bridge.launch
+roslaunch kinect2_bridge kinect2_bridge.launch  
 rosrun orbslam2 localization /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/ORBvoc.bin /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/kinect2_qhd.yaml true true
 
-2. mapping: build 2d and 3d map simultaneously
+## 2. mapping: build 2d and 3d map simultaneously
 功能：同时构建2d栅格概率地图和3d稀疏特征点地图，两地图是绝对对齐的。
 
 rosrun orbslam2 mapping /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/ORBvoc.bin /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/kinect2_qhd.yaml false false
 
-2. evaluation:
-功能：利用键盘的非阻塞输入，保存测量点数据（位姿和特征点数量）到本地文件
+## 3. evaluation:
+功能：利用键盘的非阻塞输入，保存测量点数据（位姿和特征点数量）到本地文件  
 
 rosrun orbslam2 evaluation /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/ORBvoc.bin /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/kinect2_qhd.yaml false false
 

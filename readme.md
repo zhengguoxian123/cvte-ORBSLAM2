@@ -1,9 +1,9 @@
 # ORB-SLAM2
-# modified by @rongbohou
-Based on the version of MathewDenny http://github.com/MathewDenny
+## modified by @rongbohou
+Based on the version of MathewDenny http://github.com/MathewDenny.  
 Add the 2d map using scan data.
 
-#2 相关依赖库的安装
+# 2 相关依赖库的安装
 
 ## OpenCV
 We use [OpenCV](http://opencv.org) to manipulate images and features. Dowload and install instructions can be found at: http://opencv.org. **Required at leat 2.4.3. Tested with OpenCV 2.4.11**.
@@ -68,7 +68,7 @@ make
 
 Sophus,Fast 和 vikit_common的安装参考：https://github.com/uzh-rpg/rpg_svo/wiki/Installation:-Plain-CMake-(No-ROS)
 
-#3 Building library and some nodes
+# 3 Building library and some nodes
 ## 3.1 Creating a catkin Workspace
 mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src

@@ -1,0 +1,16 @@
+*.*~
+*~
+KeyFrameTrajectory.txt
+Thirdparty/DBoW2/build/
+Thirdparty/DBoW2/lib/
+Thirdparty/g2o/build/
+Thirdparty/g2o/lib/
+Thirdparty/RGBD-DSLAM/build/
+Thirdparty/RGBD-DSLAM/lib/
+Thirdparty/RGBD-DSLAM/bin/
+measurment_points/
+build/
+lib/
+Slam_Map.bin
+Slam_latest_Map.bin
+.kdev4/

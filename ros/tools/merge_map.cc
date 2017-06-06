@@ -36,6 +36,7 @@ public:
 	}
 	void LoadMap(const string &filename,int i);
 	void SaveMap(const string &filename);
+	void CombineMap();
 	ORB_SLAM2::Map* mpMap;
 	vector<ORB_SLAM2::Map*> mvpMap;
 };
@@ -58,6 +59,24 @@ void MergeMap::LoadMap(const string& filename, int i)
 
 
 }
+void MergeMap::CombineMap()
+{
+    for(unsigned i=0;i<mvpMap.size()-1;i++)
+    {
+      ORB_SLAM2::Map* Map_temp = mvpMap[i];
+      
+      std::for_each(Map_temp->mspKeyFrames.begin(), Map_temp->mspKeyFrames.end(), [&](ORB_SLAM2::KeyFrame* pKF) {
+           mpMap->mspKeyFrames.insert(pKF);
+        });
+      
+      std::for_each(Map_temp->mspMapPoints.begin(), Map_temp->mspMapPoints.end(), [&](ORB_SLAM2::MapPoint* pMP) {
+            mpMap->mspMapPoints.insert(pMP);
+        });
+      
+      
+    }
+}
+
 
 void MergeMap::SaveMap(const string &filename)
 {
@@ -66,7 +85,7 @@ void MergeMap::SaveMap(const string &filename)
     {
         ::boost::archive::binary_oarchive oa(os, ::boost::archive::no_header);
         //oa << mpKeyFrameDatabase;
-        oa << mvpMap;
+        oa << mpMap;
     }
     cout << "Map saved to " << filename << endl;
 
@@ -84,6 +103,7 @@ int main(int argc, char **argv)
     
     tool.LoadMap(MapPath + MapFiles[i],i);
   }
+  tool.CombineMap();
   std::cout<<"mvpMap.size : " << tool.mvpMap.size()<<std::endl;
   tool.SaveMap("Slam_Final_Map.bin");
   return 0;

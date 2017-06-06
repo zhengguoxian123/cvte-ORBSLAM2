@@ -599,5 +599,5 @@ int System::GetCFKeypointNum()
   {
      return mpTracker->mCurrentFrame.mvKeys.size();
   }
-    
+
 } //namespace ORB_SLAM

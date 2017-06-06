@@ -136,6 +136,11 @@ target_link_libraries(localization ${PROJECT_NAME}
 add_executable(evaluation ros/evaluation.cc)
 target_link_libraries(evaluation ${PROJECT_NAME})
 
+# 融合多个地图工具
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/ros/tools)
+add_executable(MergeMap ros/tools/merge_map.cc)
+target_link_libraries(MergeMap ${PROJECT_NAME})
+
 #############
 ## Install ##
 #############
@@ -151,7 +156,7 @@ target_link_libraries(evaluation ${PROJECT_NAME})
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS localization mapping evaluation
+install(TARGETS localization mapping evaluation MergeMap
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

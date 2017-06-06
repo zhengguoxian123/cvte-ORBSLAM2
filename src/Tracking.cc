@@ -1433,9 +1433,10 @@ void Tracking::UpdateLocalKeyFrames()
 
 bool Tracking::Relocalization()
 {
+    
     // Compute Bag of Words Vector
     mCurrentFrame.ComputeBoW();
-    //cout << "Relocalization Initiated" << endl;
+    cout << "Relocalization Initiated" << endl;
 
     // Relocalization is performed when tracking is lost
     // Track Lost: Query KeyFrame Database for keyframe candidates for relocalisation
@@ -1451,7 +1452,7 @@ bool Tracking::Relocalization()
 
     const int nKFs = vpCandidateKFs.size();
 
-    //cout << "Relocalization: candidates =  " << nKFs  << endl;
+    cout << "Relocalization: candidates =  " << nKFs  << endl;
 
     // We perform first an ORB matching with each candidate
     // If enough matches are found we setup a PnP solver
@@ -1478,6 +1479,7 @@ bool Tracking::Relocalization()
         else
         {
             int nmatches = matcher.SearchByBoW(pKF,mCurrentFrame,vvpMapPointMatches[i]);
+	    //cout<<"matches :"<< nmatches <<endl;
             if(nmatches<15)
             {
                 vbDiscarded[i] = true;
@@ -1522,7 +1524,10 @@ bool Tracking::Relocalization()
                 vbDiscarded[i]=true;
                 nCandidates--;
             }
-
+            // test
+            if(Tcw.empty())
+	      cout<< "pnp have no output Tcw"<< endl;
+	    
             // If a Camera Pose is computed, optimize
             if(!Tcw.empty())
             {
@@ -1544,7 +1549,7 @@ bool Tracking::Relocalization()
                 }
 
                 int nGood = Optimizer::PoseOptimization(&mCurrentFrame);
-
+                cout<<"first pose optimization, inlier is: "<< nGood <<endl;
                 if(nGood<10)
                     continue;
 
@@ -1555,13 +1560,14 @@ bool Tracking::Relocalization()
                 // If few inliers, search by projection in a coarse window and optimize again
                 if(nGood<50)
                 {
-                    //cout << "Relocalization:  inliers < 50 : nGood = " << nGood << endl;
+                    cout << "Relocalization:  inliers < 50 : nGood = " << nGood << endl;
 
                     int nadditional =matcher2.SearchByProjection(mCurrentFrame,vpCandidateKFs[i],sFound,10,100);
 
                     if(nadditional+nGood>=50)
                     {
                         nGood = Optimizer::PoseOptimization(&mCurrentFrame);
+			cout<<"After SearchByProjection, the inliers is :"<< nGood <<endl;
 
                         // If many inliers but still not enough, search by projection again in a narrower window
                         // the camera has been already optimized with many points
@@ -1577,7 +1583,8 @@ bool Tracking::Relocalization()
                             if(nGood+nadditional>=50)
                             {
                                 nGood = Optimizer::PoseOptimization(&mCurrentFrame);
-
+                                cout<<"Inliers still not enough, search by projection again in a narrower window.Inliers is :"<< nGood <<endl;
+				
                                 for(int io =0; io<mCurrentFrame.N; io++)
                                     if(mCurrentFrame.mvbOutlier[io])
                                         mCurrentFrame.mvpMapPoints[io]=NULL;

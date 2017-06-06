@@ -122,7 +122,7 @@ catkin_make --pkg orbslam2
 ##  Usage
 ### 1. localization :   
 ```
-"Usage: rosrun ORB_SLAM2 RGBD path_to_vocabulary path_to_settings if_reuse_map if_publish_tf"  
+"Usage: rosrun ORB_SLAM2 RGBD path_to_vocabulary path_to_settings if_reuse_map if_publish_tf if_use_odom"  
 ```
 功能：在ORB-SLAM定位模式下跟踪机器人并发布tf用于导航。当ORB-SLAM跟丢时，利用机器人底座历程数据odom 或者 用直接法估计里程 进而发布tf继续用于导航。
 如果超过一定时间的跟丢，机器人则执行原地旋转。
@@ -130,7 +130,7 @@ catkin_make --pkg orbslam2
 ```
 roslaunch kinect2_bridge kinect2_bridge.launch  
 cd ~/rongbo/catkin_ws/orbslam2
-rosrun orbslam2 localization /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/ORBvoc.bin /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/kinect2_qhd.yaml true true
+rosrun orbslam2 localization /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/ORBvoc.bin /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/kinect2_qhd.yaml true true true
 ```
 
 ### 2. mapping: build 2d and 3d map simultaneously

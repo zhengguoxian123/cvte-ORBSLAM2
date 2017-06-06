@@ -56,7 +56,7 @@ struct CAMERA_INTRINSIC_PARAMETERS
 class ImageGrabber
 {
 public:
-    ImageGrabber(ORB_SLAM2::System* pSLAM,ros::NodeHandle &nh,const string &strSettingsFile):mpSLAM(pSLAM),mnh(nh),bpublishtf(false),bfirst_listent(true)
+    ImageGrabber(ORB_SLAM2::System* pSLAM,ros::NodeHandle &nh,const string &strSettingsFile,bool buse_odom):mpSLAM(pSLAM),mnh(nh),bpublishtf(false),bfirst_listent(true)
     {
       modom_sub = mnh.subscribe("odom",1,&ImageGrabber::odomCallback,this);
       mvel_pub = mnh.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/teleop", 10);
@@ -72,8 +72,8 @@ public:
       mCurrentOdom = mOdom;
       maxlostcounts = 250;
       
-      buseodom = false;
-      busedirect = true;
+      buseodom = buse_odom;
+      busedirect = !buse_odom;
       
       //读取相机内参--Use for direct method
       cv::FileStorage fsSettings(strSettingsFile.c_str(), cv::FileStorage::READ);
@@ -338,7 +338,7 @@ void ImageGrabber::PublishPose(cv::Mat Tcw)
                                     "odom","base_footprint"));//T_world_base
 	  std::cout<<"Using Odom to navigation"<<std::endl;
 	}
-	else //direct method 估计里程
+	else //direct method 估计里程--效果较差2017-6-6
 	{
 	  if(mlostcounts == 1) //第一次跟丢
 	  {
@@ -392,8 +392,8 @@ void ImageGrabber::PublishPose(cv::Mat Tcw)
           T_last_cur.getBasis().getRPY(roll,pitch,yaw);//弧度
           CreateTfFromXYtheta(t(0),t(1),yaw,T_last_cur); //只取2d方向
 	  
-	  // 计算T_map_current = T_map_last * T_last_cur
-	  tf::Transform T_map_base = mT_map_last *T_last_cur;
+	  // 计算T_map_current = T_map_lastbsase * T_lastbase_cameralast * T_cameralast_cameracur *T_cameracur_basecur
+	  tf::Transform T_map_base = mT_map_last *T_basefoot_camera*T_last_cur*T_basefoot_camera.inverse();
       
 	  //更新mT_map_last
 	  mT_map_last = T_map_base;//
@@ -471,9 +471,10 @@ int main(int argc, char **argv)
     
     ros::start();
     bool bReuseMap = false;
-    if(argc != 5)
+    bool buse_odom = true;
+    if(argc != 6)
     {
-        cerr << endl << "Usage: rosrun ORB_SLAM2 RGBD path_to_vocabulary path_to_settings if_reuse_map if_publish_tf" << endl;        
+        cerr << endl << "Usage: rosrun ORB_SLAM2 RGBD path_to_vocabulary path_to_settings if_reuse_map if_publish_tf if_use_odom" << endl;        
         ros::shutdown();
         return 1;
     }    
@@ -483,15 +484,21 @@ int main(int argc, char **argv)
     {
 		bReuseMap = true;
     }
+
+     if (!strcmp(argv[5], "false"))
+    {
+		buse_odom = false;
+    }
+    
     ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::RGBD,true,bReuseMap);// LoadMap("Slam_Map.bin");
 
-    ImageGrabber igb(&SLAM,nh,argv[2]);
+    ImageGrabber igb(&SLAM,nh,argv[2],buse_odom);
 
      if (!strcmp(argv[4], "true"))
     {
 		igb.bpublishtf = true;
     }
-   
+    
  
     message_filters::Subscriber<sensor_msgs::Image> rgb_sub(nh, "/kinect2/qhd/image_color", 1);
     message_filters::Subscriber<sensor_msgs::Image> depth_sub(nh, "/kinect2/qhd/image_depth_rect", 1);

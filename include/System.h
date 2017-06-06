@@ -29,6 +29,9 @@
 #include "ros/ros.h"
 #include "sensor_msgs/LaserScan.h"
 
+#include <unistd.h>
+#include <dirent.h>
+
 #include <boost/serialization/serialization.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
@@ -139,7 +142,9 @@ public:
     void PublishMap();
     //get the nunber of current frame keypoint
     int GetCFKeypointNum();
+   
 private:
+ 
 
     // Input sensor
     eSensor mSensor;

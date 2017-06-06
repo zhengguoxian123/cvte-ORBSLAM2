@@ -206,7 +206,7 @@ cv::Mat PnPsolver::iterate(int nIterations, bool &bNoMore, vector<bool> &vbInlie
         // Check inliers
         CheckInliers();
 
-        //cout << "iterate: CP mnInliersi = " << mnInliersi << " mRansacMinInliers = "<< mRansacMinInliers << endl;
+        cout << "iterate: CP mnInliersi = " << mnInliersi << " mRansacMinInliers = "<< mRansacMinInliers << endl;
 
         if(mnInliersi>=mRansacMinInliers)
         {

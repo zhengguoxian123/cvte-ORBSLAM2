@@ -120,7 +120,24 @@ cd ~/catkin_ws
 catkin_make --pkg orbslam2  
 ```
 ##  Usage
-### 1. localization :   
+#### Kinect2相机驱动和标定
+1) 驱动安装，参考：http://www.luohanjie.com/2016-03-30/under-the-ubuntu-kinectv2-configuration.html
+
+注意：要安装opencl，否则点云会出现黑线
+
+2) 相机标定
+参考：https://github.com/code-iai/iai_kinect2
+
+注意：安装顺序一步步来
+
+#### turtlebot驱动安装
+参考：https://github.com/rongbohou/cvte-Turtlebot
+
+#### rplidar驱动安装
+参考：http://wiki.ros.org/rplidar
+
+注意：安装从c++版本
+### 1. localization   
 ```
 "Usage: rosrun ORB_SLAM2 RGBD path_to_vocabulary path_to_settings if_reuse_map if_publish_tf if_use_odom"  
 ```
@@ -142,8 +159,12 @@ roslaunch turtlebot_navigation mapping_orbslam_rplidar_2.launch
 cd ~/rongbo/catkin_ws/orbslam2
 rosrun orbslam2 mapping /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/ORBvoc.bin /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/kinect2_qhd.yaml false false
 ```
-### 3. evaluation:
+### 3. evaluation
 功能：利用键盘的非阻塞输入，保存测量点数据（位姿和特征点数量）到本地文件  
+获取键盘权限
+```
+sudo chmod +777 /dev/input/event3
+```
 ```
 cd ~/rongbo/catkin_ws/orbslam2
 rosrun orbslam2 evaluation /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/ORBvoc.bin /home/bobo/rongbo/catkin_ws/src/my_orbslam/config/kinect2_qhd.yaml false false

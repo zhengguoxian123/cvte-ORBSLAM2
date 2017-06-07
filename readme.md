@@ -121,7 +121,11 @@ catkin_make --pkg orbslam2
 ```
 ##  Usage
 #### Kinect2相机驱动和标定
-1) 驱动安装，参考：http://www.luohanjie.com/2016-03-30/under-the-ubuntu-kinectv2-configuration.html
+1) 驱动安装, 参考
+
+http://www.luohanjie.com/2016-03-30/under-the-ubuntu-kinectv2-configuration.html
+
+http://www.cnblogs.com/hitcm/p/5118196.html
 
 注意：要安装opencl，否则点云会出现黑线
 
